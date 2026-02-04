@@ -1,0 +1,10 @@
+field_name,description,data_type,example_value
+artist_name,The full name of a musical artist or band,string,"AC/DC"
+genre_name,The category of music,string,"Rock"
+start_date,The beginning of the search window (YYYY-MM-DD),date,"2023-01-01"
+end_date,The end of the search window (YYYY-MM-DD),date,"2023-12-31"
+country_name,The full name of the country where the customer resides,string,"Canada"
+city_name,The city where the billing address is located,string,"Paris"
+min_total,The minimum dollar amount for an invoice,float,0.99
+media_type_name,The file format of the track,string,"MPEG audio file"
+employee_last_name,The last name of the sales support agent,string,"Peacock"
