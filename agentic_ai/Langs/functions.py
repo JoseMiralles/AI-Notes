@@ -77,3 +77,43 @@ def fill_sql_template(query: str) -> str:
             query = query.replace(placeholder, row['example_value'])
     
     return query
+
+
+from rich.tree import Tree
+from pydantic import BaseModel
+
+def build_tree(label, data, tree=None):
+    """
+    Recursively builds a Rich Tree from a dictionary or list.
+    Handles Pydantic models and truncates long strings.
+    """
+    if tree is None:
+        tree = Tree(f"[bold blue]{label}[/]")
+
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if isinstance(value, (dict, list, BaseModel)):
+                subtree = tree.add(f"[bold cyan]{key}[/]")
+                build_tree(key, value, subtree)
+            else:
+                # Leaf node: display value (truncated if too long)
+                val_str = str(value)
+                if len(val_str) > 100:
+                    val_str = val_str[:100] + "... [dim](truncated)[/]"
+                tree.add(f"[bold cyan]{key}[/]: [green]{val_str}[/]")
+    
+    elif isinstance(data, list):
+        for index, item in enumerate(data):
+            if isinstance(item, (dict, list, BaseModel)):
+                subtree = tree.add(f"[bold yellow]Item {index}[/]")
+                build_tree(f"Item {index}", item, subtree)
+            else:
+                tree.add(f"[bold yellow]Item {index}[/]: [green]{str(item)}[/]")
+    
+    elif isinstance(data, BaseModel):
+        # Handle Pydantic Models by converting to dict
+        # Supports both Pydantic v1 (.dict()) and v2 (.model_dump())
+        model_dict = data.model_dump() if hasattr(data, "model_dump") else data.dict()
+        build_tree(label, model_dict, tree)
+
+    return tree
